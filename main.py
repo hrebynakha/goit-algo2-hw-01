@@ -21,10 +21,9 @@ def find_min_max(
 
     if len(arr) == 1:
         return arr[0], arr[0]
+
     if len(arr) == 2:
-        if arr[0] < arr[1]:
-            return arr[0], arr[1]
-        return arr[1], arr[0]
+        return (arr[0], arr[1]) if arr[0] < arr[1] else (arr[1], arr[0])
 
     mid = len(arr) // 2
     left, right = arr[0:mid], arr[mid:]
