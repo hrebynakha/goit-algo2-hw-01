@@ -59,18 +59,21 @@ def find_min_max(
 
 
 class QuickSelectView:
-    """Class to view step by step how work quck select algorithm"""
+    """Class to view step by step how work quick select algorithm"""
 
-    def __init__(self, arr: list, k: int):
+    def __init__(self, arr: list, k: int, step_mode: bool = True) -> None:
         if not 1 <= k <= len(arr):
-            raise ValueError("K-el can't be grate that array length or less than 1")
+            raise ValueError(
+                "k-th element can't be greater than array length or less than 1"
+            )
         self.arr = arr
         self.k = k  # 1 based element
         self.left = 0
-        self.rigth = len(self.arr) - 1
+        self.right = len(self.arr) - 1
+        self.step_mode = step_mode
 
-    def partition(self, left: int, right: int):
-        """Partition function fro select algorithm"""
+    def partition(self, left: int, right: int) -> int:
+        """Partition function for QuickSelect algorithm."""
         pivot = self.arr[right]
         self.show("=======================>>", end=None)
         self.show(f"Pivot is {right+1} element", color="95", end=None)
@@ -83,7 +86,7 @@ class QuickSelectView:
                 if i != j:
                     self.arr[i], self.arr[j] = self.arr[j], self.arr[i]
                     self.view(i, j, right, "<", ">")
-                    self.step(f"Swaped {i+1} and {j+1} elements!", color="93")
+                    self.step(f"Swapped {i+1} and {j+1} elements!", color="93")
 
         if self.arr[i + 1] != self.arr[right]:
             self.view(i + 1, right, right, "<", ">")
@@ -91,12 +94,10 @@ class QuickSelectView:
             self.arr[i + 1], self.arr[right] = self.arr[right], self.arr[i + 1]
         return i + 1
 
-    def select(
-        self,
-    ) -> int:
-        """Select the first min k-el in unsoretd array"""
-        while self.left < self.rigth:
-            pivot_idx = self.partition(left=self.left, right=self.rigth)
+    def select(self) -> int:
+        """Select the first min k-el in unsorted array"""
+        while self.left < self.right:
+            pivot_idx = self.partition(left=self.left, right=self.right)
             self.view(pivot_idx, -1, start="?", end="?")
             self.step(f"We looking for {pivot_idx +1} element??")
 
@@ -108,22 +109,27 @@ class QuickSelectView:
             self.show(" ..No!  ", color="91")
 
             if pivot_idx > (self.k - 1):
-                self.rigth = pivot_idx - 1
+                self.right = pivot_idx - 1
             else:
                 self.left = pivot_idx + 1
 
         self.show("Looking element in looking postiton!", color="93", end=None)
         return self.arr[self.k - 1]
 
-    def show(self, text, color="1", end=""):
-        """Print text withot new line"""
+    def show(self, text, color="1", end="") -> None:
+        """Print text without new line"""
         print(f"\033[{color}m{text}\033[0m", end=end)
 
-    def step(self, text, color="94"):
+    def step(self, text, color="94") -> None:
         """Wait for input"""
-        input(f" ||| \033[{color}m{text}\033[0m")
+        if self.step_mode:
+            input(f" ||| \033[{color}m{text}\033[0m")
+        else:
+            print(f" ||| \033[{color}m{text}\033[0m")
 
-    def view(self, current_i, current_j=None, pivot_idx=None, start="[", end="]"):
+    def view(
+        self, current_i, current_j=None, pivot_idx=None, start="[", end="]"
+    ) -> None:
         """Show curent array info"""
         for i, _ in enumerate(self.arr):
             if pivot_idx == i:
